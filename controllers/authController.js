@@ -29,7 +29,8 @@ export const registeringUser = async (req, res) => {
     connection.release();
     return res.status(200).json({ msg: "User registered succesfully" });
   } catch (Err) {
-    return res.status(500).json({msg:"Server Error"},Err)
+    console.log(Err);
+
   }
 };
 export const logingUser = async (req, res) => {
@@ -41,7 +42,7 @@ export const logingUser = async (req, res) => {
   }
   try{
     const connection = await pool.getConnection();
-    let [existingUser] = await password.query(
+    let [existingUser] = await pool.query(
         `SELECT * FROM users WHERE username=?`,[username]
     )
     connection.release()
@@ -61,8 +62,8 @@ export const logingUser = async (req, res) => {
     const token = jwt.sign(payload, 'Secret_key', { expiresIn: "24h" });
     console.log("Token:", token);
     console.log("User Data:", existingUser.length);
-    res.json({ token});
+    res.status(200).json({token});
   }catch(Err){
-    return res.status(500).json({msg:"Server Error"},Err)
+    console.log(Err);
   }
 };

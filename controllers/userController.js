@@ -5,17 +5,19 @@ export const userUpdate = async (req, res) => {
   const { profile_picture, bio } = req.body;
   try {
     const [updatedProfile] = await pool.query(
-      `UPDATE users SET bio=?,profile_picture=? WHERE id = ?`,
+      `UPDATE users SET bio=?, profile_picture=? WHERE id = ?`,
       [bio, profile_picture, id]
     );
     if (updatedProfile.affectedRows === 0) {
       return res.status(404).json({ msg: "User not found" });
     }
-    return res.status(200).json({ msg: "User updated succesfully" });
-  } catch (Err) {
-    console.log(Err);
+    return res.status(200).json({ msg: "User updated successfully" });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
+
 export const getUser = async (req, res) => {
   const { id } = req.params;
   try {
@@ -24,7 +26,8 @@ export const getUser = async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
     return res.status(200).json(user[0]);
-  } catch (Err) {
-    console.log(Err);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
