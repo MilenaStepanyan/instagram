@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import defaultPfp from "../../public/defaultPFP.png"
 
 const Profile = () => {
   const [username, setUsername] = useState("");
@@ -7,6 +8,7 @@ const Profile = () => {
   const [pfp, setPfp] = useState("");
   const [bio, setBio] = useState("");
   const [error, setError] = useState("");
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,11 +61,12 @@ const Profile = () => {
     }
   };
 
+
   return (
     <div>
       <h1>Profile</h1>
       {error && <p>{error}</p>}
-      <img src={pfp} alt="Profile" />
+      <img src={pfp||defaultPfp} alt="pfp" />
       <h2>{fullName}</h2>
       <p>{username}</p>
       <p>{bio}</p>
