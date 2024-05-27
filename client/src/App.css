@@ -232,3 +232,12 @@ body {
 .learn{
   color: #00376B;
 }
+.pfp {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  object-fit: cover;
+  background-color: #f0f0f0; 
+}
