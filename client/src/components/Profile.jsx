@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import defaultPfp from "../../public/defaultPFP.png";
-import { Link } from "react-router-dom";
-
+import Post from "./Post";
 const Profile = () => {
   const [user, setUser] = useState("");
   const [error, setError] = useState("");
@@ -85,13 +84,14 @@ const Profile = () => {
           },
         }
       );
-
+        
       await handleGettingProfileInformation(userId);
     } catch (error) {
       console.error("Error uploading profile picture:", error);
       setError("Error uploading profile picture");
     }
   };
+
 
   return (
     <div>
@@ -100,7 +100,7 @@ const Profile = () => {
       <button onClick={handleUpload}>Upload Profile Picture</button>
       <h1>{user.fullname}</h1>
       <img
-      className="pfp"
+        className="pfp"
         src={
           user.profile_picture
             ? `http://localhost:3018${user.profile_picture}`
@@ -109,10 +109,7 @@ const Profile = () => {
         alt="Profile"
       />
       <p>{user.username}</p>
-      <p>{user.bio || ""}</p>
-      <Link className="editProfileButton" to="/edit">
-        <button>Edit Profile</button>
-      </Link>
+        <Post/>
     </div>
   );
 };
