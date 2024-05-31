@@ -30,7 +30,6 @@ export const registeringUser = async (req, res) => {
     return res.status(200).json({ msg: "User registered succesfully" });
   } catch (Err) {
     console.log(Err);
-
   }
 };
 export const logingUser = async (req, res) => {
@@ -40,30 +39,36 @@ export const logingUser = async (req, res) => {
       .status(400)
       .json({ msg: "Please provide username And password" });
   }
-  try{
+  try {
     const connection = await pool.getConnection();
     let [existingUser] = await pool.query(
-        `SELECT * FROM users WHERE username=?`,[username]
-    )
-    connection.release()
-    if(existingUser.length === 0){
-        return res.status(400).json({msg:"User doesn't exist"})
+      `SELECT * FROM users WHERE username=?`,
+      [username]
+    );
+    connection.release();
+    if (existingUser.length === 0) {
+      return res.status(400).json({ msg: "User doesn't exist" });
     }
-    const isHashedPassword = bcrypt.compare(password,existingUser[0].password)
-    if(!isHashedPassword){
-        return res.status(400).json({msg:'Password or Username are incorrect'})
+    const isHashedPassword = await bcrypt.compare(
+      password,
+      existingUser[0].password
+    );
+    if (!isHashedPassword) {
+      return res
+        .status(400)
+        .json({ msg: "Password or Username are incorrect" });
     }
     const payload = {
-        user: {
-          id: existingUser[0].id,
-        },
-      };
-  
-    const token = jwt.sign(payload, 'Secret_key', { expiresIn: "24h" });
+      user: {
+        id: existingUser[0].id,
+      },
+    };
+
+    const token = jwt.sign(payload, "Secret_key", { expiresIn: "24h" });
     console.log("Token:", token);
     console.log("User Data:", existingUser.length);
-    res.status(200).json({token});
-  }catch(Err){
+    res.status(200).json({ token });
+  } catch (Err) {
     console.log(Err);
   }
 };
