@@ -47,7 +47,7 @@ const Post = () => {
           },
         }
       );
-      console.log(response.data);
+
       setPosts(response.data);
     } catch (Err) {
       console.log(Err);
@@ -109,7 +109,6 @@ const Post = () => {
       {posts.map((post) => (
        
         <div key={post.id}>
-          { console.log(post)}
           <img src={`http://localhost:3018${post.image_url}`} alt="Post" />
           <p>{post.content}</p>
         </div>

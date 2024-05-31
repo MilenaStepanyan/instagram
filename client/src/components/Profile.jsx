@@ -2,10 +2,12 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import defaultPfp from "../../public/defaultPFP.png";
 import Post from "./Post";
+ import { FollowersList, FollowingList } from "./Follows";
 const Profile = () => {
   const [user, setUser] = useState("");
   const [error, setError] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [userId, setUserId] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,7 +23,7 @@ const Profile = () => {
           setError("User ID not found in token");
           return;
         }
-
+         setUserId(userId)
         await handleGettingProfileInformation(userId);
       } catch (error) {
         setError("Error decoding token");
@@ -110,6 +112,9 @@ const Profile = () => {
       />
       <p>{user.username}</p>
         <Post/>
+         {userId && <FollowersList userId={userId} />} 
+         {userId && <FollowingList userId={userId} />} 
+
     </div>
   );
 };
