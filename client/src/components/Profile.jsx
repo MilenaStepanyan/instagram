@@ -1,13 +1,16 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import defaultPfp from "../../public/defaultPFP.png";
+import { FaCloudUploadAlt } from "react-icons/fa";
 import Post from "./Post";
- import { FollowersList, FollowingList } from "./Follows";
+import { FollowersList, FollowingList } from "./Follows";
+
 const Profile = () => {
   const [user, setUser] = useState("");
   const [error, setError] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
-  const [userId, setUserId] = useState("")
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +26,7 @@ const Profile = () => {
           setError("User ID not found in token");
           return;
         }
-         setUserId(userId)
+        setUserId(userId);
         await handleGettingProfileInformation(userId);
       } catch (error) {
         setError("Error decoding token");
@@ -86,7 +89,7 @@ const Profile = () => {
           },
         }
       );
-        
+
       await handleGettingProfileInformation(userId);
     } catch (error) {
       console.error("Error uploading profile picture:", error);
@@ -94,27 +97,39 @@ const Profile = () => {
     }
   };
 
-
   return (
-    <div>
+    <div className="container">
       {error && <p>{error}</p>}
-      <input type="file" onChange={handleFileChange} accept="image/*" />
-      <button onClick={handleUpload}>Upload Profile Picture</button>
-      <h1>{user.fullname}</h1>
-      <img
-        className="pfp"
-        src={
-          user.profile_picture
-            ? `http://localhost:3018${user.profile_picture}`
-            : defaultPfp
-        }
-        alt="Profile"
-      />
-      <p>{user.username}</p>
-        <Post/>
-         {userId && <FollowersList userId={userId} />} 
-         {userId && <FollowingList userId={userId} />} 
-
+      <div className="profile-container">
+        <h1>{user.fullname}</h1>
+        <img
+          className="pfp"
+          src={
+            user.profile_picture
+              ? `http://localhost:3018${user.profile_picture}`
+              : defaultPfp
+          }
+          alt="Profile"
+        />{" "}
+        <h4>{user.username}</h4>
+        <div className="upload-container">
+          <input
+            type="file"
+            id="fileUpload"
+            className="uploadSign"
+            onChange={handleFileChange}
+            accept="image/*"
+          />
+          <label htmlFor="fileUpload" className="custom-upload">
+            <FaCloudUploadAlt className="upload-icon" />
+          </label>
+          <button onClick={handleUpload}>Upload Profile Picture</button>
+        </div>
+      </div>
+      <Link to={`/chat/${user.username}`}>Start Chat</Link>
+      <Post />
+      {userId && <FollowersList userId={userId} />}
+      {userId && <FollowingList userId={userId} />}
     </div>
   );
 };

@@ -60,13 +60,13 @@ const Post = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-  
+
     const token = localStorage.getItem("token");
-  
+
     const formData = new FormData();
     formData.append("content", caption);
     formData.append("postImage", image);
-  
+
     try {
       const res = await axios.post(
         `http://localhost:3018/api/post/upload-post`,
@@ -88,11 +88,10 @@ const Post = () => {
       setError("Error uploading post");
     }
   };
-  
 
   return (
     <>
-      <form onSubmit={handleUpload}>
+      <form className="post-form" onSubmit={handleUpload}>
         <input
           type="text"
           placeholder="Caption"
@@ -106,13 +105,14 @@ const Post = () => {
         />
         <button type="submit">Upload</button>
       </form>
-      {posts.map((post) => (
-       
-        <div key={post.id}>
-          <img src={`http://localhost:3018${post.image_url}`} alt="Post" />
-          <p>{post.content}</p>
-        </div>
-      ))}
+      <div className="posts-container">
+        {posts.map((post) => (
+          <div className="post-item" key={post.id}>
+            <img className="posts" src={`http://localhost:3018${post.image_url}`} alt="Post" />
+            <p>{post.content}</p>
+          </div>
+        ))}
+      </div>
     </>
   );
 };
