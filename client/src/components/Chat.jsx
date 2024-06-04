@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -7,33 +7,57 @@ function Chat({ socket }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [username, setUsername] = useState("");
+  const [inputRecipient, setInputRecipient] = useState("");
 
   useEffect(() => {
     const fetchUsername = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        const username = payload.user.username;
-        setUsername(username);
-        socket.emit("join", username);
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const payload = JSON.parse(atob(token.split(".")[1]));
+          console.log("Token payload:", payload);
+          if (payload.user && payload.user.id) {
+            const response = await axios.get(`http://localhost:3018/api/user/get/${payload.user.id}`);
+            const userUsername = response.data.username;
+            if (userUsername) {
+              setUsername(userUsername);
+              console.log("Username set to:", userUsername);
+              socket.emit("join", userUsername);
+            } else {
+              console.error("Username not found in the response");
+            }
+          } else {
+            console.error("User ID not found in token payload");
+          }
+        } else {
+          console.error("Token not found in localStorage");
+        }
+      } catch (error) {
+        console.error("Error fetching username:", error);
       }
     };
     fetchUsername();
   }, [socket]);
 
   const sendMessage = async () => {
-    if (currentMessage !== "") {
+    if (currentMessage !== "" && inputRecipient !== "") {
       const messageData = {
         author: username,
-        recipient,
+        recipient: inputRecipient,
         message: currentMessage,
-        time: new Date().toLocaleTimeString(),
+        time: new Date().toISOString().slice(0, 19).replace('T', ' '), // format to MySQL datetime
       };
-
-      await axios.post("http://localhost:3018/api/chat/send-message", messageData);
-      socket.emit("send_message", messageData);
-      setMessageList((prevList) => [...prevList, messageData]);
-      setCurrentMessage("");
+      console.log('Sending message data:', messageData);
+      try {
+        await axios.post("http://localhost:3018/api/chat/send-message", messageData);
+        socket.emit("send_message", messageData);
+        setMessageList((prevList) => [...prevList, messageData]);
+        setCurrentMessage("");
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
+    } else {
+      console.log("Message or recipient is empty");
     }
   };
 
@@ -58,6 +82,12 @@ function Chat({ socket }) {
         ))}
       </div>
       <div className="chat-footer">
+        <input
+          type="text"
+          value={inputRecipient}
+          onChange={(e) => setInputRecipient(e.target.value)}
+          placeholder="Recipient username"
+        />
         <input
           type="text"
           value={currentMessage}
