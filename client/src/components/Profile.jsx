@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import defaultPfp from "../../public/defaultPFP.png";
@@ -7,9 +7,9 @@ import Post from "./Post";
 import { FollowersList, FollowingList } from "./Follows";
 
 const Profile = () => {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
   const [error, setError] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
@@ -38,10 +38,16 @@ const Profile = () => {
   }, []);
 
   const getUserIdFromToken = (token) => {
-    const payload = token.split(".")[1];
-    const decodedPayload = atob(payload);
-    const parsedData = JSON.parse(decodedPayload);
-    return parsedData.user.id;
+    try {
+      const payload = token.split(".")[1];
+      const decodedPayload = atob(payload);
+      const parsedData = JSON.parse(decodedPayload);
+      return parsedData.user.id;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      setError("Error decoding token");
+      return null;
+    }
   };
 
   const handleGettingProfileInformation = async (id) => {
@@ -100,33 +106,35 @@ const Profile = () => {
   return (
     <div className="container">
       {error && <p>{error}</p>}
-      <div className="profile-container">
-        <h1>{user.fullname}</h1>
-        <img
-          className="pfp"
-          src={
-            user.profile_picture
-              ? `http://localhost:3018${user.profile_picture}`
-              : defaultPfp
-          }
-          alt="Profile"
-        />
-        <h4>{user.username}</h4>
-        <div className="upload-container">
-          <input
-            type="file"
-            id="fileUpload"
-            className="uploadSign"
-            onChange={handleFileChange}
-            accept="image/*"
+      {user && (
+        <div className="profile-container">
+          <h1>{user.fullname}</h1>
+          <img
+            className="pfp"
+            src={
+              user.profile_picture
+                ? `http://localhost:3018${user.profile_picture}`
+                : defaultPfp
+            }
+            alt="Profile"
           />
-          <label htmlFor="fileUpload" className="custom-upload">
-            <FaCloudUploadAlt className="upload-icon" />
-          </label>
-          <button onClick={handleUpload}>Upload Profile Picture</button>
+          <h4>{user.username}</h4>
+          <div className="upload-container">
+            <input
+              type="file"
+              id="fileUpload"
+              className="uploadSign"
+              onChange={handleFileChange}
+              accept="image/*"
+            />
+            <label htmlFor="fileUpload" className="custom-upload">
+              <FaCloudUploadAlt className="upload-icon" />
+            </label>
+            <button onClick={handleUpload}>Upload Profile Picture</button>
+          </div>
         </div>
-      </div>
-      <Link to={`/chat/${user.username}`}>Start Chat</Link>
+      )}
+      <Link to={`/chat/${user?.username}`}>Start Chat</Link>
       <Post />
       {userId && <FollowersList userId={userId} />}
       {userId && <FollowingList userId={userId} />}

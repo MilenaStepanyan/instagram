@@ -440,3 +440,67 @@ body {
   border-radius: 20px;
   cursor: pointer;
 }
+.chat-window {
+  display: flex;
+  height: 100vh;
+}
+
+.contacts-list {
+  width: 30%;
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-right: 1px solid #ccc;
+}
+
+.contact-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.contact-item:hover {
+  background-color: #ddd;
+}
+
+.chat-body {
+  width: 70%;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.message {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.message.sent {
+  background-color: #dcf8c6;
+  text-align: right;
+}
+
+.message.received {
+  background-color: #fff;
+}
+
+.chat-footer {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.chat-footer input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.chat-footer button {
+  padding: 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
