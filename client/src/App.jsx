@@ -8,6 +8,7 @@ import Post from "./components/Post";
 import Search from "./components/Search";
 import Chat from "./components/Chat";
 import io from "socket.io-client";
+import Home from "./components/Home";
 
 const socket = io.connect("http://localhost:3018");
 
@@ -15,6 +16,7 @@ function App() {
   return (
     <Router>
       <Routes>
+      <Route exact path="/" element={<Home />} />
         <Route exact path="/search" element={<Search />} />
         <Route exact path="/profile" element={<Profile />} />
         <Route exact path="/login" element={<Login />} />

@@ -27,12 +27,13 @@ const FollowersList = ({ userId }) => {
   }, [userId, token]);
 
   return (
-    <div>
+    <div className="whole">
       <h3>Followers</h3>
       <ul>
-        {followers.map((follower) => (
+        {followers.length}
+        {/* {followers.map((follower) => (
           <li key={follower.id}>{follower.username}</li>
-        ))}
+        ))} */}
       </ul>
     </div>
   );
@@ -62,12 +63,10 @@ const FollowingList = ({ userId }) => {
   }, [userId, token]);
 
   return (
-    <div>
+    <div className="whole">
       <h3>Following</h3>
       <ul>
-        {following.map((user) => (
-          <li key={user.id}>{following.length}</li>
-        ))}
+      {following.length}
       </ul>
     </div>
   );

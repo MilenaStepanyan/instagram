@@ -37,8 +37,8 @@ const Register = () => {
     }
   };
   return (
-    <>
-        <div className="container">
+
+        <div className="container1">
       <div className="form-container">
         <img className="instaWriting" src={insta} alt="" />
         <p className="login-with-facebook">
@@ -111,7 +111,7 @@ const Register = () => {
     <img className="app" src={android} alt="" />
       </div>
     </div>
-    </>
+
   );
 };
 

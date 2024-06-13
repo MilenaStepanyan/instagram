@@ -6,18 +6,6 @@ body {
   padding: 0;
 }
 
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.profile-container {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
 .profile-container h1 {
   font-size: 2em;
   margin-bottom: 10px;
@@ -111,7 +99,7 @@ body {
 }
 .container {
   max-width: 600px;
-  margin: auto;
+
   padding: 20px;
 }
 
@@ -126,7 +114,6 @@ body {
   object-fit: cover;
   margin-bottom: 20px;
 }
-
 
 .uploadSign {
   display: none;
@@ -300,14 +287,6 @@ body {
   background-color: #fafafa;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
 .form-container {
   width: 300px;
   padding: 50px 40px;
@@ -383,11 +362,12 @@ body {
   font-size: 16px;
   border-radius: 100%;
 }
-.upload-container{
+.upload-container {
   display: flex;
   flex-direction: row-reverse;
   gap: 10px;
-}.chat-window {
+}
+.chat-window {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -409,7 +389,7 @@ body {
 
 .sent {
   align-self: flex-end;
-  background-color: #DCF8C6;
+  background-color: #dcf8c6;
 }
 
 .received {
@@ -433,7 +413,7 @@ body {
 }
 
 .chat-footer button {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 8px 20px;
   border: none;
@@ -503,4 +483,96 @@ body {
   background-color: #007bff;
   color: white;
   cursor: pointer;
+}
+
+.headPart {
+  display: flex;
+  gap: 200px;
+  justify-content: left;
+  align-items: center;
+}
+.container1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.img-pfp {
+  display: flex;
+  flex-direction: column;
+  gap: 200px;
+  align-items: center;
+  justify-content: center;
+}
+.menu {
+  gap: 40px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding-left: 20px;
+  padding-right: 80px;
+  border-right: 1px rgba(128, 128, 128, 0.291) solid;
+}
+.profile-icon {
+  border: 1px black solid;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+.insta-icon-profile {
+  width: 140px;
+}
+.container {
+  display: flex;
+  gap: 200px;
+}
+.ul-list {
+  display: flex;
+  gap: 40px;
+  flex-direction: column;
+}
+.list {
+  display: flex;
+  font-size: large;
+  gap: 10px;
+  align-items: center;
+  list-style: none;
+}
+.icon {
+  font-size: 24px;
+  color: black;
+}
+.special {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  list-style: none;
+}
+.profile-text {
+  margin-bottom: 18px;
+}
+.list1 {
+  list-style: none;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+.flws {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+.whole{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

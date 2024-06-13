@@ -1,15 +1,24 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import insta from "../../public/instaWriting.png";
 import defaultPfp from "../../public/defaultPFP.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCompass,
+  faHouse,
+  faSquarePlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { faFacebookMessenger } from "@fortawesome/free-brands-svg-icons";
 import Post from "./Post";
 import { FollowersList, FollowingList } from "./Follows";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState("");
   const [error, setError] = useState("");
-  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePicture, setProfilePicture] = useState("");
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
@@ -38,16 +47,10 @@ const Profile = () => {
   }, []);
 
   const getUserIdFromToken = (token) => {
-    try {
-      const payload = token.split(".")[1];
-      const decodedPayload = atob(payload);
-      const parsedData = JSON.parse(decodedPayload);
-      return parsedData.user.id;
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      setError("Error decoding token");
-      return null;
-    }
+    const payload = token.split(".")[1];
+    const decodedPayload = atob(payload);
+    const parsedData = JSON.parse(decodedPayload);
+    return parsedData.user.id;
   };
 
   const handleGettingProfileInformation = async (id) => {
@@ -105,39 +108,92 @@ const Profile = () => {
 
   return (
     <div className="container">
-      {error && <p>{error}</p>}
-      {user && (
-        <div className="profile-container">
-          <h1>{user.fullname}</h1>
+      <div className="menu">
+        <div className="head-part">
           <img
-            className="pfp"
-            src={
-              user.profile_picture
-                ? `http://localhost:3018${user.profile_picture}`
-                : defaultPfp
-            }
-            alt="Profile"
+            className="insta-icon-profile"
+            src={insta}
+            alt="instagram-icon"
           />
-          <h4>{user.username}</h4>
-          <div className="upload-container">
-            <input
-              type="file"
-              id="fileUpload"
-              className="uploadSign"
-              onChange={handleFileChange}
-              accept="image/*"
+        </div>
+        <ul className="ul-list">
+          <li className="list">
+            <FontAwesomeIcon className="icon" icon={faHouse} />
+            Home
+          </li>
+          <li className="list">
+            <FontAwesomeIcon className="icon" icon={faSearch} />
+            Search
+          </li>
+          <li className="list">
+            <FontAwesomeIcon className="icon" icon={faCompass} />
+            Explore
+          </li>
+          <li className="list">
+            <FontAwesomeIcon className="icon" icon={faFacebookMessenger} />
+            <Link className="list1" to={`/chat/${user.username}`}>
+              Messages
+            </Link>
+          </li>
+          <li className="list">
+            <FontAwesomeIcon className="icon" icon={faSquarePlus} />
+            Create
+          </li>
+          <li className="special">
+            <img
+              src={
+                user.profile_picture
+                  ? `http://localhost:3018${user.profile_picture}`
+                  : defaultPfp
+              }
+              className="profile-icon"
+              alt="Profile"
             />
-            <label htmlFor="fileUpload" className="custom-upload">
-              <FaCloudUploadAlt className="upload-icon" />
-            </label>
-            <button onClick={handleUpload}>Upload Profile Picture</button>
+            <p className="profile-text">Profile</p>
+          </li>
+        </ul>
+      </div>
+      <div className="whole-profile">
+        <div className="headPart">
+          <div className="img-pfp">
+            <div className="name-pfp">
+              <h1>{user.fullname}</h1>
+              <img
+                className="pfp"
+                src={
+                  user.profile_picture
+                    ? `http://localhost:3018${user.profile_picture}`
+                    : defaultPfp
+                }
+                alt="Profile"
+              />
+              <h4>{user.username}</h4>
+
+              {/* <div className="upload-container">
+                <input
+                  type="file"
+                  id="fileUpload"
+                  className="uploadSign"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                />
+                <label htmlFor="fileUpload" className="custom-upload">
+                  <FaCloudUploadAlt className="upload-icon" />
+                </label>
+                <button onClick={handleUpload}>Upload Profile Picture</button>
+              </div> */}
+            </div>
+          </div>
+          <div className="flws">
+            {userId && <FollowersList userId={userId} />}
+            {userId && <FollowingList userId={userId} />}
           </div>
         </div>
-      )}
-      <Link to={`/chat/${user?.username}`}>Start Chat</Link>
-      <Post />
-      {userId && <FollowersList userId={userId} />}
-      {userId && <FollowingList userId={userId} />}
+        {error && <p>{error}</p>}
+        <div className="profile-container"></div>
+
+        {/* <Post /> */}
+      </div>
     </div>
   );
 };
