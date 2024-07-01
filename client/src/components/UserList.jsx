@@ -31,7 +31,7 @@ function UserList({ username }) {
   return (
     <div className="user-list">
       <h2>Recent Chats</h2>
-      <ul>
+      <ul className='user-item'>
         {users.map((user) => (
           <li key={user.username}>
             <Link to={`/chat/${user.username}`}>{user.username}</Link>

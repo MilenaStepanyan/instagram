@@ -2,9 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 const Post = () => {
   const [posts, setPosts] = useState([]);
-  const [image, setImage] = useState(null);
-  const [caption, setCaption] = useState("");
-  const [error, setError] = useState("second");
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,53 +56,9 @@ const Post = () => {
     GettingPosts();
   }, []);
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-
-    const token = localStorage.getItem("token");
-
-    const formData = new FormData();
-    formData.append("content", caption);
-    formData.append("postImage", image);
-
-    try {
-      const res = await axios.post(
-        `http://localhost:3018/api/post/upload-post`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(res.data);
-
-      GettingPosts();
-      setCaption("");
-      setImage(null);
-    } catch (error) {
-      console.error("Error uploading post:", error);
-      setError("Error uploading post");
-    }
-  };
 
   return (
-    <>
-      <form className="post-form" onSubmit={handleUpload}>
-        <input
-          type="text"
-          placeholder="Caption"
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-        />
-        <button type="submit">Upload</button>
-      </form>
+<>
       <div className="posts-container">
         {posts.map((post) => (
           <div className="post-item" key={post.id}>

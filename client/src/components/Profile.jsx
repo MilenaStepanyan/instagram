@@ -14,12 +14,15 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { faFacebookMessenger } from "@fortawesome/free-brands-svg-icons";
 import Post from "./Post";
 import { FollowersList, FollowingList } from "./Follows";
+import Modal from "./Modal";
+import Upload from "./Upload";
 
 const Profile = () => {
   const [user, setUser] = useState("");
   const [error, setError] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [userId, setUserId] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,11 +74,9 @@ const Profile = () => {
     }
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     setProfilePicture(event.target.files[0]);
-  };
 
-  const handleUpload = async () => {
     const token = localStorage.getItem("token");
     const userId = getUserIdFromToken(token);
 
@@ -85,7 +86,7 @@ const Profile = () => {
     }
 
     const formData = new FormData();
-    formData.append("profilePicture", profilePicture);
+    formData.append("profilePicture", event.target.files[0]);
 
     try {
       await axios.put(
@@ -106,6 +107,10 @@ const Profile = () => {
     }
   };
 
+  const triggerFileInput = () => {
+    document.getElementById("fileUpload").click();
+  };
+
   return (
     <div className="container">
       <div className="menu">
@@ -122,20 +127,23 @@ const Profile = () => {
             Home
           </li>
           <li className="list">
+            <Link to="/search" className="list1 list">
             <FontAwesomeIcon className="icon" icon={faSearch} />
             Search
+            </Link>
+           
           </li>
           <li className="list">
             <FontAwesomeIcon className="icon" icon={faCompass} />
             Explore
           </li>
           <li className="list">
+            <Link className="list1 list" to={`/chat/${user.username}`}>
             <FontAwesomeIcon className="icon" icon={faFacebookMessenger} />
-            <Link className="list1" to={`/chat/${user.username}`}>
               Messages
             </Link>
           </li>
-          <li className="list">
+          <li className="list" onClick={() => setShowModal(true)}>
             <FontAwesomeIcon className="icon" icon={faSquarePlus} />
             Create
           </li>
@@ -148,6 +156,8 @@ const Profile = () => {
               }
               className="profile-icon"
               alt="Profile"
+              onClick={triggerFileInput}
+              style={{ cursor: "pointer" }}
             />
             <p className="profile-text">Profile</p>
           </li>
@@ -158,6 +168,7 @@ const Profile = () => {
           <div className="img-pfp">
             <div className="name-pfp">
               <h1>{user.fullname}</h1>
+
               <img
                 className="pfp"
                 src={
@@ -166,23 +177,21 @@ const Profile = () => {
                     : defaultPfp
                 }
                 alt="Profile"
+                onClick={triggerFileInput}
+                style={{ cursor: "pointer" }}
               />
               <h4>{user.username}</h4>
-
-              {/* <div className="upload-container">
-                <input
-                  type="file"
-                  id="fileUpload"
-                  className="uploadSign"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                />
-                <label htmlFor="fileUpload" className="custom-upload">
-                  <FaCloudUploadAlt className="upload-icon" />
-                </label>
-                <button onClick={handleUpload}>Upload Profile Picture</button>
-              </div> */}
             </div>
+          </div>
+          <div className="upload-container">
+            <input
+              type="file"
+              id="fileUpload"
+              className="uploadSign"
+              onChange={handleFileChange}
+              accept="image/*"
+              style={{ display: "none" }}
+            />
           </div>
           <div className="flws">
             {userId && <FollowersList userId={userId} />}
@@ -192,8 +201,12 @@ const Profile = () => {
         {error && <p>{error}</p>}
         <div className="profile-container"></div>
 
-        {/* <Post /> */}
+        <Post />
       </div>
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <Upload onUploadComplete={() => setShowModal(false)} />
+      </Modal>
+
     </div>
   );
 };

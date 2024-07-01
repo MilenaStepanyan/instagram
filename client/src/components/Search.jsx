@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 
@@ -50,7 +50,7 @@ const Search = () => {
   };
 
   return (
-    <div>
+    <div className="search-container">
       <form onSubmit={handleSearch}>
         <input
           type="text"
