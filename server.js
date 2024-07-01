@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
-import { createServer } from 'http';
+import http from "http"
 import { Server } from 'socket.io';
 import authRouter from './routes/authRoute.js';
 import userRouter from './routes/userRoute.js';
@@ -11,7 +11,6 @@ import followerRoutes from './routes/followerRoute.js';
 import chatRouter from './routes/chatRoute.js';
 import { verifyToken } from './middlewares/authMiddleware.js';
 import pool from './lib/db.js';
-
 const app = express();
 const PORT = 3018;
 const UPLOADS_DIR = path.resolve('uploads');
@@ -30,12 +29,13 @@ app.use('/api/', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/chat', chatRouter);
 
-const server = createServer(app);
+
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
+    origin: 'http://localhost:5173',  
+    methods: ['GET', 'POST'],
+  },
 });
 
 const users = {};
@@ -43,23 +43,43 @@ const users = {};
 io.on('connection', (socket) => {
   console.log('user connected');
 
-  socket.on('join', (username) => {
+  socket.on('join', async (username) => {
     if (username) {
       users[username] = socket.id;
       console.log(`${username} joined with socket ID ${socket.id}`);
-    } else {
-      console.log(`Null username attempted to join with socket ID ${socket.id}`);
+      
+
+      try {
+        const [undeliveredMessages] = await pool.execute(
+          'SELECT * FROM Messages WHERE recipient = ? AND delivered = 0',
+          [username]
+        );
+        undeliveredMessages.forEach(async (message) => {
+          io.to(socket.id).emit('receive_message', message);
+          await pool.execute(
+            'UPDATE Messages SET delivered = 1 WHERE id = ?',
+            [message.id]
+          );
+        });
+      } catch (error) {
+        console.error('Error fetching undelivered messages:', error);
+      }
     }
   });
 
-  socket.on('send_message', (data) => {
+  socket.on('send_message', async (data) => {
     const { recipient, message, author, time } = data;
     const recipientSocketId = users[recipient];
     if (recipientSocketId) {
       io.to(recipientSocketId).emit('receive_message', { author, message, time });
-      console.log(`Message sent from ${author} to ${recipient}: ${message}`);
-    } else {
-      console.log(`Recipient ${recipient} not found.`);
+    }
+    try {
+      await pool.execute(
+        "INSERT INTO Messages (author, recipient, message, time, delivered) VALUES (?, ?, ?, ?, ?)",
+        [author, recipient, message, time, recipientSocketId ? 1 : 0]
+      );
+    } catch (error) {
+      console.error('Error storing message:', error);
     }
   });
 
@@ -73,6 +93,7 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 });
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
